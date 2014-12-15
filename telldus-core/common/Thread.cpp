@@ -13,6 +13,8 @@
 #include "common/Thread.h"
 #ifdef _WINDOWS
 #include <windows.h>
+#else
+#include <pthread.h>
 #endif
 #include "common/EventHandler.h"
 

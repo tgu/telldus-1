@@ -11,6 +11,7 @@
 #include <unistd.h>
 #include <list>
 #include <string>
+#include <pthread.h>
 
 #include "service/TellStick.h"
 #include "service/Log.h"
