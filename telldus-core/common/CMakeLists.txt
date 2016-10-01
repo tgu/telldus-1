@@ -32,6 +32,7 @@ INCLUDE_DIRECTORIES( ${CMAKE_SOURCE_DIR} )
 IF (APPLE)
 	#### Mac OS X ####
 	FIND_LIBRARY(ICONV_LIBRARY iconv)
+	FIND_LIBRARY(LIBUSB usb)
 	ADD_DEFINITIONS( -D_MACOSX )
 	LIST(APPEND  telldus-common_SRCS
 		Event_unix.cpp
@@ -41,6 +42,7 @@ IF (APPLE)
 	)
 	LIST(APPEND telldus-common_LIBRARIES
 		${ICONV_LIBRARY}
+		${LIBUSB}
 	)
 ELSEIF (WIN32)
 	#### Windows ####
