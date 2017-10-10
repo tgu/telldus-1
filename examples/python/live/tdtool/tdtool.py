@@ -12,8 +12,8 @@ if not sys.stdout.isatty():
         # here you can set encoding for your 'out.txt' file
         sys.stdout = codecs.getwriter('utf8')(sys.stdout)
 
-PUBLIC_KEY = ''
-PRIVATE_KEY = ''
+PUBLIC_KEY = os.environ['PUBLIC_KEY']
+PRIVATE_KEY = os.environ['PRIVATE_KEY']
 
 TELLSTICK_TURNON = 1
 TELLSTICK_TURNOFF = 2
