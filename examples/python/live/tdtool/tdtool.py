@@ -112,8 +112,10 @@ def listSensorsAndSendOverMQTT(broker):
                         elif (data['name'] == "humidity"):
                                 humidity = data['value'];
                 print "%s\t%s\t%s\t%s\t%s\t%s" % (sensor['id'], sensor['name'], lastupdate, sensor['battery'], temperature, humidity)
-                publish.single("/telldus/"+sensor['id']+"/"+sensor['name'], 
-                    payload='{"lastupdate":"'+lastupdate+'","battery":"'+sensor['battery']+'","temperature":"'+temperature+'","humidity":"'+humidity+'"}', 
+                topic = "/telldus/"+sensor['id']+"/"+sensor['name']
+                payload = '{"lastupdate":"'+lastupdate+'","battery":"'+sensor['battery']+'","temperature":"'+temperature+'","humidity":"'+humidity+'"}'
+                publish.single(str(topic), 
+                    payload=str(payload), 
                     hostname=broker, 
                     qos=0, 
                     retain=True, 
@@ -295,7 +297,7 @@ def main(argv):
                 doMethod(arg, TELLSTICK_DIM, dimlevel)
 
         elif opt in ("-v", "--dimlevel"):
-            dimlevel = arg
+            dimlevel = argv
 
         elif opt in ("--up"):
             doMethod(arg, TELLSTICK_UP)
