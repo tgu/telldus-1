@@ -6,6 +6,8 @@ import oauth.oauth as oauth
 import datetime
 from configobj import ConfigObj
 
+import paho.mqtt.publish as publish
+import paho.mqtt.client as mqtt
 import sys, codecs
 # set up output encoding
 if not sys.stdout.isatty():
@@ -74,9 +76,12 @@ def printUsage():
 	print("       --list-sensors (-s short option)")
 	print("             Lists currently configured sensors")
 	print("")
-	print("       --sensor-data sensor (-d short option)")
+	print("       --sensor-data sensor (-e short option)")
 	print("             Get sensor data with sensor id number")
 	print("")
+    print("       --list-sensors-mqtt broker (-m short option)")
+    print("             Lists currently configured sensors and send over mqtt to broker")
+    print("")
 	print("Report bugs to <info.tech@telldus.se>")
 
 def listSensors():
@@ -84,12 +89,35 @@ def listSensors():
         print("Number of sensors: %i" % len(response['sensor']));
         for sensor in response['sensor']:
                 lastupdate = datetime.datetime.fromtimestamp(int(sensor['lastUpdated']));
+                temperature = ""
+                humidity = ""
                 for data in sensor['data']:
                         if (data['name'] == "temp"):
                                 temperature = data['value'];
                         elif (data['name'] == "humidity"):
                                 humidity = data['value'];
                 print "%s\t%s\t%s\t%s\t%s\t%s" % (sensor['id'], sensor['name'], lastupdate, sensor['battery'], temperature, humidity)
+
+
+def listSensorsAndSendOverMQTT(broker):
+        response = doRequest('sensors/list', {'includeIgnored': 1,'includeValues': 1,'includeScale': 1});
+        print("Number of sensors: %i" % len(response['sensor']));
+        for sensor in response['sensor']:
+                lastupdate = datetime.datetime.fromtimestamp(int(sensor['lastUpdated']));
+                temperature = ""
+                humidity = ""
+                for data in sensor['data']:
+                        if (data['name'] == "temp"):
+                                temperature = data['value'];
+                        elif (data['name'] == "humidity"):
+                                humidity = data['value'];
+                print "%s\t%s\t%s\t%s\t%s\t%s" % (sensor['id'], sensor['name'], lastupdate, sensor['battery'], temperature, humidity)
+                publish.single("/telldus/"+sensor['id']+"/"+sensor['name'], 
+                    payload='{"lastupdate":"'+lastupdate+'","battery":"'+sensor['battery']+'","temperature":"'+temperature+'","humidity":"'+humidity+'"}', 
+                    hostname=broker, 
+                    qos=0, 
+                    retain=True, 
+                    protocol=mqtt.MQTTv311)
 
 def getSensorData(sensorId):
 	response = doRequest('sensor/info', {'id': sensorId });
@@ -228,7 +256,7 @@ def main(argv):
 		authenticate()
 		return
 	try:
-		opts, args = getopt.getopt(argv, "lsd:n:f:d:b:v:h", ["list", "list-sensors", "sensor-data=", "on=", "off=", "dim=", "bell=", "dimlevel=", "up=", "down=", "help"])
+		opts, args = getopt.getopt(argv, "lsm:e:n:f:d:b:v:h", ["list", "list-sensors", "list-sensors-mqtt", "sensor-data=", "on=", "off=", "dim=", "bell=", "dimlevel=", "up=", "down=", "help"])
 	except getopt.GetoptError:
 		printUsage()
 		sys.exit(2)
@@ -245,7 +273,10 @@ def main(argv):
 		elif opt in ("-s", "--list-sensors"):
 			listSensors()
 
-		elif opt in ("-d", "--sensor-data"):
+        elif opt in ("-m", "--list-sensors-mqtt"):
+            listSensorsAndSendOverMQTT(arg)
+
+		elif opt in ("-e", "--sensor-data"):
 			getSensorData(arg)
 
 		elif opt in ("-n", "--on"):
