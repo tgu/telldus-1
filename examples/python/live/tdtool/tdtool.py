@@ -112,10 +112,10 @@ def listSensorsAndSendOverMQTT(broker):
                         elif (data['name'] == "humidity"):
                                 humidity = data['value'];
                 print "%s\t%s\t%s\t%s\t%s\t%s" % (sensor['id'], sensor['name'], lastupdate, sensor['battery'], temperature, humidity)
-                topic = "/telldus/"+sensor['id']+"/"+sensor['name']
-                payload = '{"lastupdate":"'+lastupdate+'","battery":"'+sensor['battery']+'","temperature":"'+temperature+'","humidity":"'+humidity+'"}'
-                publish.single(str(topic), 
-                    payload=str(payload), 
+                topic = "/telldus/"+str(sensor['id'])+"/"+str(sensor['name'])
+                payload = '{"lastupdate":"'+lastupdate+'","battery":"'+str(sensor['battery'])+'","temperature":"'+temperature+'","humidity":"'+humidity+'"}'
+                publish.single(topic, 
+                    payload=payload, 
                     hostname=broker, 
                     qos=0, 
                     retain=True, 
