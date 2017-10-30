@@ -56,7 +56,7 @@ std::string ProtocolNexa::getStringForMethod(int method, unsigned char data, Con
 			// We also return the last packet so Device::doAction() doesn't
 			// report TELLSTICK_ERROR_METHOD_NOT_SUPPORTED
 
-			str.insert(0, 1, 2);  // Repeat two times
+			str.insert(0, 1, char(2));  // Repeat two times
 			str.insert(0, 1, 'R');
 			for (int i = 0; i < 5; ++i) {
 				controller->send(str);
