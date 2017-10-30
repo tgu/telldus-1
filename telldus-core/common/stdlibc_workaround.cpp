@@ -4,6 +4,7 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
+#if 0
 #include <istream>  // NOLINT(readability/streams)
 // Workarounds for symbols that are missing from Leopard stdlibc++.dylib.
 _GLIBCXX_BEGIN_NAMESPACE(std)
@@ -71,3 +72,4 @@ template istream& istream::_M_extract(void*&);
 #endif
 
 _GLIBCXX_END_NAMESPACE
+#endif

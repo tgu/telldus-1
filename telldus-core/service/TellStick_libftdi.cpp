@@ -4,13 +4,14 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-#include <ftdi.h>
+#include <libftdi1/ftdi.h>
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <list>
 #include <string>
+#include <pthread.h>
 
 #include "service/TellStick.h"
 #include "service/Log.h"

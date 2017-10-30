@@ -107,15 +107,17 @@ ENDIF()
 ######## Platforms-specific, non configurable  ########
 
 IF (APPLE) #### Mac OS X ####
-	SET(DEFAULT_FTDI_ENGINE "ftd2xx")
+	SET(DEFAULT_FTDI_ENGINE "libftdi")
 	SET( telldus-service_TARGET	TelldusService )
 	ADD_DEFINITIONS( -D_MACOSX )
 	FIND_LIBRARY(COREFOUNDATION_LIBRARY CoreFoundation)
 	FIND_LIBRARY(IOKIT_LIBRARY IOKit)
+	FIND_LIBRARY(LIBUSB usb)
 
 	SET( telldus-service_LIBRARIES
 		${telldus-service_LIBRARIES}
 		${COREFOUNDATION_LIBRARY}
+		${LIBUSB}
 		${IOKIT_LIBRARY}
 		TelldusCommon
 	)
@@ -183,11 +185,11 @@ IF (FTDI_ENGINE STREQUAL "ftd2xx")
 	ADD_DEFINITIONS( -DLIBFTD2XX )
 	LIST(APPEND telldus-service_SRCS TellStick_ftd2xx.cpp )
 	LIST(APPEND telldus-service_LIBRARIES ${FTD2XX_LIBRARY})
-ELSE (FTDI_ENGINE STREQUAL "ftd2xx")
-	FIND_LIBRARY(FTDI_LIBRARY ftdi)
+ELSE (FTDI_ENGINE STREQUAL "libftdi")
+	FIND_LIBRARY(FTDI_LIBRARY ftdi1)
 	INCLUDE(FindPkgConfig)
 	PKG_SEARCH_MODULE(FTDI libftdi)
-	INCLUDE_DIRECTORIES( ${FTDI_INCLUDEDIR} )
+	INCLUDE_DIRECTORIES( ${FTDI_INCLUDEDIR} "/usr/local/include/" )
 	ADD_DEFINITIONS( -DLIBFTDI )
 	LIST(APPEND telldus-service_SRCS TellStick_libftdi.cpp )
 	LIST(APPEND telldus-service_LIBRARIES ${FTDI_LIBRARY})

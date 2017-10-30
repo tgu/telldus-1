@@ -24,6 +24,11 @@ SET(BUILD_TELLDUS-CENTER TRUE CACHE BOOL "Build TelldusCenter")
 SET(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 SET(GENERATE_MAN	FALSE	CACHE	BOOL "Enable generation of man-files")
 
+IF(APPLE)
+set(CMAKE_OSX_DEPLOYMENT_TARGET "10.10")
+ENDIF()
+
+
 IF(UNIX)
 	SET(PLUGIN_LIB_PATH "lib" CACHE STRING "Relative path to the directory to install TelldusCenter plugin libraries into")
 	SET(PLUGIN_LIB_FULL_PATH "${PLUGIN_LIB_PATH}/telldus/tellduscenter/plugins")

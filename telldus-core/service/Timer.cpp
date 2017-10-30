@@ -9,6 +9,7 @@
 #else
 #include <sys/time.h>
 #include <errno.h>
+#include <pthread.h>
 #endif
 #include "common/Mutex.h"
 
